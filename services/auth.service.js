@@ -37,6 +37,7 @@ const register = async (name, username, email, password, phone, gender, birthDat
             }
         }
         );
+        throw error;
 
 
     }
@@ -60,15 +61,8 @@ const login = async (email,username, password) => {
         return token;
     }
     catch (error) {
-        error.errors.forEach((err) => {
-            if (err.type === 'unique violation') {
-                throw new Error(`This ${err.path} is already taken`);
-            }
-            else {
-                throw new Error(`Error : ${error.message}`);
-            }
-        }
-        );
+
+        throw new Error(`Error logging in: ${error.message}`);
 
 
     }

@@ -27,7 +27,7 @@ const addDestination = async (name, description, location,image, startTime,endTi
         throw new Error(`Error adding destination: ${error.message}`);
     }
 }
-const getFoodItems = async (page,_limit) => {
+const getFoodItems = async (_limit,page) => {
     const limit = _limit? _limit : 10;
     const offset = page ? page * limit : 0;
     try {
@@ -61,7 +61,7 @@ const getFoodItems = async (page,_limit) => {
         throw new Error(`Error getting destinations: ${error.message}`);
     }
 }
-const getTravelItems = async (page,_limit) => {
+const getTravelItems = async (_limit,page) => {
     const limit = _limit? _limit : 10;
     const offset = page ? page * limit : 0;
     try {
@@ -77,7 +77,7 @@ const getTravelItems = async (page,_limit) => {
         throw new Error(`Error getting destinations: ${error.message}`);
     }
 }
-const getbookingItems = async (page,_limit) => {
+const getbookingItems = async (_limit,page) => {
     const limit = _limit? _limit : 10;
     const offset = page ? page * limit : 0;
     try {
@@ -94,7 +94,7 @@ const getbookingItems = async (page,_limit) => {
     }
 }
 
-const getDestination = async (page,_limit) => {
+const getDestination = async (_limit,page) => {
     const limit = _limit? _limit : 10;
     const offset = page ? page * limit : 0;
     try {

@@ -12,6 +12,8 @@ const addDestination = async (req, res) => {
 const getFoodItems = async (req, res) => {
   const page = parseInt(req.query.page);
   const limit = parseInt(req.query.limit);
+  console.log(page)
+  console.log(limit)
   const offset = page ? page * limit : 0;
   try {
     const destinations = await DestinationService.getFoodItems(limit, offset);
