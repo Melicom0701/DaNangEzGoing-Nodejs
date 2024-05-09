@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
             notEmpty : true,
         },
     },
+    avatar : {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     salt : {
         type: DataTypes.STRING,
         allowNull: false,

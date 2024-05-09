@@ -1,5 +1,6 @@
 const { Sequelize } = require('sequelize');
 const  db = require('../models');
+const DestinationReview_Like = db.DestinationReview_Like;
 const destination = db.Destination;
 const DestinationReviews = db.DestinationReview;
 
@@ -27,6 +28,106 @@ const addDestination = async (name, description, location,image, startTime,endTi
         throw new Error(`Error adding destination: ${error.message}`);
     }
 }
+const getLikes = async (reviewId) => {
+    try {
+        const likes = await DestinationReview_Like.findAndCountAll({
+            where: {
+                destinationReviewId: reviewId
+            }
+        });
+        return likes;
+    }
+    catch (error) {
+        throw new Error(`Error getting likes: ${error.message}`);
+    }
+
+}
+
+const LikeStatus = async (destinationReviewId, userId) => {
+    try{
+        const isLiked = await DestinationReview_Like.findOne({
+            where: {
+                destinationReviewId,
+                userId
+            }
+        });
+        if (isLiked) {
+            return true;
+        }
+        return false;
+
+
+    
+    }
+    catch (error) {
+        throw new Error(`Error liking review: ${error.message}`);
+    }
+}
+const LikeReview = async (destinationReviewId, userId) => {
+    //check if exist then delete 
+    try {
+        const like = await DestinationReview_Like.findOne({
+            where: {
+                destinationReviewId,
+                userId
+            }
+        });
+        if (like) {
+            await like.destroy();
+            return { message: 'unliked' };
+        } else {
+            const newLike = await DestinationReview_Like.create({
+                destinationReviewId,
+                userId
+            });
+            return { message: 'liked' };
+        }
+    } catch (error) {
+        throw new Error(`Error liking review: ${error.message}`);
+    }
+}
+const addReview = async (review, image, rating, destinationId, userId) => {
+    try {
+        const newReview = await DestinationReviews.create({
+            review,
+            image,
+            rating,
+            destinationId,
+            userId,
+        });
+
+        return newReview;
+    }
+    catch (error) {
+        throw new Error(`Error adding review: ${error.message}`);
+    }
+}
+const getReviews = async (destinationId) => {
+    //join user and destination table 
+    try {
+        const reviews = await DestinationReviews.findAll({
+            where: {
+                destinationId
+            },
+            include: [
+                {
+                    model: db.User,
+                    attributes: ['name', 'email','username','avatar']
+                },
+                {
+                    model: db.Destination,
+                    attributes: ['name','location']
+                }
+            ]
+        });
+
+    return reviews;
+    }
+    catch (error) {
+        throw new Error(`Error getting reviews: ${error.message}`);
+    }
+}
+
 const getFoodItems = async (_limit,page) => {
     const limit = _limit? _limit : 10;
     const offset = page ? page * limit : 0;
@@ -172,6 +273,11 @@ module.exports = {
     getFoodItems,
     getTravelItems,
     getDestinationById,
-    getbookingItems
+    getbookingItems,
+    getLikes,
+    addReview,
+    getReviews,
+    LikeStatus,
+    LikeReview
     
 }

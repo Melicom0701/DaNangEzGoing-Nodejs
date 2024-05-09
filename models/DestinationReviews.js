@@ -48,6 +48,10 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'destinationId',
             onDelete: 'CASCADE',
         });
+        DestinationReview.belongsTo(models.User, {
+            foreignKey: 'userId',
+            onDelete: 'CASCADE',
+        });
     };
     return DestinationReview;
 }

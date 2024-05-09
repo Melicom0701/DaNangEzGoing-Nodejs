@@ -1,5 +1,5 @@
 const DestinationService = require("../services/destination.service");
-
+const jwt = require("jsonwebtoken");
 const addDestination = async (req, res) => {
   try {
     const {name,description,location,image,startTime,endTime,averageRating,averagePrice,date,x,y,category} = req.body;
@@ -9,6 +9,18 @@ const addDestination = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const getLikes = async (req, res) => {  
+  const { reviewId } = req.params;
+  try{
+  const likes = await DestinationService.getLikes(reviewId);
+  res.status(200).json(likes);
+  }
+  catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+
+
+}
 const getFoodItems = async (req, res) => {
   const page = parseInt(req.query.page);
   const limit = parseInt(req.query.limit);
@@ -22,6 +34,36 @@ const getFoodItems = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const LikeStatus = async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+    console.log(reviewId)
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+
+    const like = await DestinationService.LikeStatus(reviewId, userId);
+    res.status(201).json(like);
+  }
+  catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+
+}
+const LikeReview = async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+
+    const like = await DestinationService.LikeReview(reviewId, userId);
+    res.status(201).json(like);
+  }
+  catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
 const getTravelItems = async (req, res) => {
   const page = parseInt(req.query.page);
   const limit = parseInt(req.query.limit);
@@ -33,6 +75,33 @@ const getTravelItems = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const addReview = async (req, res) => {
+  try {
+    const { review, image, rating, userId } = req.body;
+    const destinationId = req.params.id;
+    console.log(destinationId);
+    const newReview = await DestinationService.addReview(
+      review,
+      image,
+      rating,
+      destinationId,
+      userId
+    );
+    res.status(201).json(newReview);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+const getReviews = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const reviews = await DestinationService.getReviews(id);
+    res.status(200).json(reviews);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
 const getbookingItems = async (req, res) => {
   const page = parseInt(req.query.page);
   const limit = parseInt(req.query.limit);
@@ -117,4 +186,9 @@ module.exports = {
   getTravelItems,
   getbookingItems,
   getDestinationById,
+  addReview,
+  LikeStatus,
+  getReviews,
+  LikeReview,
+  getLikes
 };
