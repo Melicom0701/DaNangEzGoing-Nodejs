@@ -3,6 +3,7 @@ const  db = require('../models');
 const DestinationReview_Like = db.DestinationReview_Like;
 const destination = db.Destination;
 const DestinationReviews = db.DestinationReview;
+const SavedDestination = db.SavedDestination;
 
 const addDestination = async (name, description, location,image, startTime,endTime,averageRating,averagePrice, x, y,category) => {
     try {
@@ -27,6 +28,31 @@ const addDestination = async (name, description, location,image, startTime,endTi
     } catch (error) {
         throw new Error(`Error adding destination: ${error.message}`);
     }
+}
+const saveDestination = async (destinationId, userId) => {
+    try {
+        const saved = await SavedDestination.findOne({
+            where: {
+                destinationId,
+                userId
+            }
+        });
+        if (saved) {
+            await saved.destroy();
+            return { message: 'unsaved' };
+        } else {
+            const newSaved = await SavedDestination.create({
+                destinationId,
+                userId
+            });
+            return { message: 'saved' };
+        }
+    } catch (error) {
+        throw new Error(`Error saving destination: ${error.message}`);
+    }
+
+
+
 }
 const getLikes = async (reviewId) => {
     try {
@@ -278,6 +304,7 @@ module.exports = {
     addReview,
     getReviews,
     LikeStatus,
-    LikeReview
+    LikeReview,
+    saveDestination
     
 }

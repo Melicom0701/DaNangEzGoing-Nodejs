@@ -13,6 +13,7 @@ const {
     LikeStatus,
     LikeReview,
     getLikes,
+    saveDestination,
     getbookingItems} = require("../controllers/destination.controller");
 const { validateInput, validateReview } = require("../middlewares/destination.middleware");
 
@@ -28,13 +29,15 @@ router.get("/Review/:reviewId/LikeStatus", LikeStatus)
 router.get("/Review/:reviewId/like", getLikes)
 router.post("/Review/:reviewId/like", LikeReview)
 
-
-
+//destination 
+//save destination
+router.post("/:id/save", saveDestination)
 
 router.get("/:id", getDestinationById);
 router.get("/", getDestination);
 router.put("/:id", updateDestination);
 router.delete("/:id", deleteDestination);
+
 
 //desination review 
 

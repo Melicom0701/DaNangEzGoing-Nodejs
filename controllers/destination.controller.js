@@ -9,6 +9,19 @@ const addDestination = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const saveDestination = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+    const save = await DestinationService.saveDestination(id, userId);
+    res.status(201).json(save);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+
+}
 const getLikes = async (req, res) => {  
   const { reviewId } = req.params;
   try{
@@ -190,5 +203,6 @@ module.exports = {
   LikeStatus,
   getReviews,
   LikeReview,
-  getLikes
+  getLikes,
+  saveDestination
 };

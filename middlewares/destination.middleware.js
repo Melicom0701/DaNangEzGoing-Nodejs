@@ -13,6 +13,7 @@ const validateInput = (req, res, next) => {
     y,
     category,
   } = req.body;
+  console.log(req.body)
   if (
     !name ||
     !description ||
