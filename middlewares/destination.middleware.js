@@ -75,6 +75,8 @@ const validateReview = async (req, res, next) => {
   }
   next();
 };
+const validateAddMenu = async (req, res, next) => {
+}
 module.exports = {
   validateInput,
   validateReview,

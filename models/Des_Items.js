@@ -1,18 +1,25 @@
 module.exports = (sequelize, DataTypes) => {
-    const Post = sequelize.define('Post', {
+    const Des_Items = sequelize.define('Des_Items', {
         id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
             primaryKey: true,
         },
-        title: {
+        destinationId: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+            },
+        },
+        name: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 notEmpty: true,
             },
         },
-        content: {
+        price: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
@@ -26,18 +33,6 @@ module.exports = (sequelize, DataTypes) => {
                 notEmpty: true,
             },
         },
-        date: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-            },
-        },
-
-
-
-
-
         isActive: {
             type: DataTypes.BOOLEAN,
             defaultValue: true,
@@ -46,14 +41,19 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
         },
-    }, {});
-    Post.associate = function (models) {
-        //1 - 1 to destination 
-        Post.belongsTo(models.Destination, {
+    },);
+    Des_Items.associate = function (models) {
+        Des_Items.belongsTo(models.Destination, {
             foreignKey: 'destinationId',
             onDelete: 'CASCADE',
         });
-
+        Des_Items.hasMany(models.Categories_Item, {
+            foreignKey: 'itemId'
+        });
+        
     };
-    return Post;
+   
+    return Des_Items;
+
+
 }

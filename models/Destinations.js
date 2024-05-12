@@ -5,6 +5,10 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true,
         },
+        userId: {
+            type: DataTypes.UUID,
+            allowNull: true,
+        },
         name: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -19,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
                 notEmpty: true,
             },
         },
+
         description: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -83,8 +88,6 @@ module.exports = (sequelize, DataTypes) => {
 
     }, {});
     Destination.associate = function (models) {
-        //
-
     };
     return Destination;
 }

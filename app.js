@@ -7,6 +7,7 @@ const cors = require('cors');
 const db = require('./models');
 const app = express();
 const router = require('./routes/index');
+const e = require('express');
 //disable cors
 app.use(cors());
 app.use(logger('dev'));
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 
+app.use(express.static('uploads'));
 
 
 app.use('/', router);

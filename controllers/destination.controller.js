@@ -1,9 +1,13 @@
 const DestinationService = require("../services/destination.service");
+
 const jwt = require("jsonwebtoken");
 const addDestination = async (req, res) => {
   try {
     const {name,description,location,image,startTime,endTime,averageRating,averagePrice,date,x,y,category} = req.body;
-    const newDestination = await DestinationService.addDestination(name, description, location,image, startTime,endTime,averageRating,averagePrice, x, y,category);
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;    
+    const newDestination = await DestinationService.addDestination(name, description, location,image, startTime,endTime,averageRating,averagePrice, x, y,category,userId);
     res.status(201).send("Success!");
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -189,6 +193,45 @@ const getDestinationById = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
     };
+const getMenu = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const menu = await DestinationService.getMenu(id);
+    res.status(200).json(menu);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+const addMenu = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, price, image } = req.body;
+    const { categories } = req.body;
+    const menu = await DestinationService.addMenu(id, name, price, image, categories);
+    res.status(201).json(menu);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+const getCategories = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const categories = await DestinationService.getCategories(name);
+    res.status(200).json(categories);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+const addCategory = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const category = await DestinationService.addCategory(name);
+    res.status(201).json(category);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
 
 module.exports = {
   addDestination,
@@ -204,5 +247,9 @@ module.exports = {
   getReviews,
   LikeReview,
   getLikes,
-  saveDestination
+  saveDestination,
+  getMenu,
+  addMenu,
+  getCategories,
+  addCategory,
 };

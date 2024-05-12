@@ -21,7 +21,14 @@ module.exports = (sequelize, DataTypes) => {
         },
     }, {});
     SavedDestination.associate = function (models) {
-        // associations can be defined here
+        SavedDestination.belongsTo(models.User, {
+        foreignKey: 'userId',
+        onDelete: 'CASCADE',
+        });
+        SavedDestination.belongsTo(models.Destination, {
+        foreignKey: 'destinationId',
+        onDelete: 'CASCADE',
+        });
     };
     return SavedDestination;
 }
