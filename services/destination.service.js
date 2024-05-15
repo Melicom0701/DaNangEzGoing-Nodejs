@@ -79,6 +79,7 @@ const getLikes = async (reviewId) => {
   }
 };
 
+
 const LikeStatus = async (destinationReviewId, userId) => {
   try {
     const isLiked = await DestinationReview_Like.findOne({
@@ -378,9 +379,28 @@ const getCategoryId = async (name) => {
     throw new Error(`Error getting category id: ${error.message}`);
   }
 };
+const getSavedDestinations = async (userId) => {
+  try {
+    const saved = await SavedDestination.findAll({
+      where: {
+        userId,
+      },
+      include: [
+        {
+          model: destination,
+        },
+      ],
+    });
+    return saved;
+  } catch (error) {
+    throw new Error(`Error getting saved destinations: ${error.message}`);
+  }
+
+}
 
 module.exports = {
   addDestination,
+  getSavedDestinations,
   getDestination,
   updateDestination,
   deleteDestination,

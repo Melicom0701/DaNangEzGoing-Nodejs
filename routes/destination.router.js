@@ -1,55 +1,37 @@
 const express = require("express");
 const router = express.Router();
-const {
-    addDestination,
-    getDestination,
-    updateDestination,
-    deleteDestination,
-    getDestinationById,
-    getFoodItems,
-    getTravelItems,
-    addReview,
-    getReviews,
-    LikeStatus,
-    LikeReview,
-    getLikes,
-    saveDestination,
-    getMenu,
-    addMenu,
-    getCategories,
-    addCategory,
-    getbookingItems} = require("../controllers/destination.controller");
+const  destinationController = require("../controllers/destination.controller");
 const { validateInput, validateReview } = require("../middlewares/destination.middleware");
-
-router.post("/", validateInput, addDestination);
-router.get("/food", getFoodItems);
-router.get("/travel", getTravelItems);
-router.get("/booking", getbookingItems);
+router.post("/", validateInput, destinationController.addDestination);
+router.get("/food", destinationController.getFoodItems);
+router.get("/travel", destinationController.getTravelItems);
+router.get("/booking", destinationController.getbookingItems);
 
 //review routes
-router.get("/:id/review",getReviews);
-router.post("/:id/review", validateReview ,addReview);
-router.get("/Review/:reviewId/LikeStatus", LikeStatus)
-router.get("/Review/:reviewId/like", getLikes)
-router.post("/Review/:reviewId/like", LikeReview)
+router.get("/:id/review",destinationController.getReviews);
+router.post("/:id/review", validateReview ,destinationController.addReview);
+router.get("/Review/:reviewId/LikeStatus", destinationController.LikeStatus)
+router.get("/Review/:reviewId/like", destinationController.getLikes)
+router.post("/Review/:reviewId/like", destinationController.LikeReview)
 
 
 //destination 
 //save destination
-router.post("/:id/save", saveDestination)
+router.post("/:id/save", destinationController.saveDestination);
+router.get("/saved", destinationController.getSavedDestinations);
 
-router.get("/:id", getDestinationById);
-router.get("/", getDestination);
-router.put("/:id", updateDestination);
-router.delete("/:id", deleteDestination);
+router.get("/:id", destinationController.getDestinationById);
+router.get("/", destinationController.getDestination);
+router.put("/:id", destinationController.updateDestination);
+router.delete("/:id", destinationController.deleteDestination);
 
 
-router.get("/:id/menu",getMenu);
-router.post("/:id/menu",addMenu);
+router.get("/:id/menu",destinationController.getMenu);
+router.post("/:id/menu",destinationController.addMenu);
 
 //category
-router.get("/category", getCategories);
-router.post("/category", addCategory);
+router.get("/category", destinationController.getCategories);
+router.post("/category", destinationController.addCategory);
 
 
 //desination review 

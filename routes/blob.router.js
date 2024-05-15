@@ -23,6 +23,7 @@ router.post("/image", (req, res) => {
     if (err) {
       res.status(500).json({ error: err.message });
     } else {
+      console.log(req.file);
       res.status(200).json({ path: req.file.filename });
     }
   });

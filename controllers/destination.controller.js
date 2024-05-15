@@ -16,6 +16,10 @@ const addDestination = async (req, res) => {
 const saveDestination = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!req.headers.authorization) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
     const token = req.headers.authorization.split(" ")[1];
     const decoded = await jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.id;
@@ -232,11 +236,28 @@ const addCategory = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 }
+const getSavedDestinations = async (req, res) => {
+  console.log("aasdads")
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+    const destinations = await DestinationService.getSavedDestinations(userId);
+    res.status(200).json(destinations);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
 
 module.exports = {
   addDestination,
   getDestination,
   updateDestination,
+  getSavedDestinations,
   deleteDestination,
   getFoodItems,
   getTravelItems,
