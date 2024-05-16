@@ -5,7 +5,32 @@ const destination = db.Destination;
 const Categories_Item = db.Categories_Item;
 const Category = db.Categories;
 
+const getAllItems = async () => {
+    try {
+        const menu = await Des_Items.findAll({
+            include:[
+                {
+                    model: destination,
+                    attributes: ["name","location"],
+                },
+                {
+                    model: Categories_Item,
+                    include: [
+                        {
+                            model: Category,
+                            attributes: ["id","name"],
+                        },
+                    ],
+                },
+            ],
 
+        });
+        console.log("finsihed fill all items")
+        return menu;
+    } catch (error) {
+        throw new Error(`Error getting menu: ${error.message}`);
+    }
+};
 
 
 
@@ -31,7 +56,9 @@ const getItems = async (itemName) => {
                         },
                     ],
                 },
-            ]
+            ],
+            limit: 10,
+
         });
         return menu;
     } catch (error) {
@@ -55,7 +82,6 @@ const merge = (left, right) => {
 
 const mergeSort = (items) => {
     items = Array.from(items);
-    console.log(items);
     if (items.length <= 1) return items;
     const middle = Math.floor(items.length / 2);
     const left = items.slice(0, middle);
@@ -67,8 +93,8 @@ const mergeSort = (items) => {
 let Citems;
 const searchByCategory = async (q) => {
     if (!Citems) {
-        Citems = await getItems("");
-        Citems = Citems.slice(0, 10000);
+        Citems = await getAllItems();
+        Citems = Citems.slice(0, 1000);
         Citems = Citems.map((item) => item.dataValues);
         Citems.forEach((item) => {
         item.Categories_Items = item.Categories_Items.map((ci) => ci.Category.dataValues);
@@ -99,10 +125,6 @@ const searchByCategory = async (q) => {
 
 
 }
-
-
-
-
 
 
 const searchByName = async (itemName)  => {
