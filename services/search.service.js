@@ -1,5 +1,6 @@
 const { Sequelize } = require("sequelize");
 const db = require("../models");
+const { all } = require("axios");
 const Des_Items = db.Des_Items;
 const destination = db.Destination;
 const Categories_Item = db.Categories_Item;
@@ -90,17 +91,20 @@ const mergeSort = (items) => {
         mergeSort(left), mergeSort(right)
     );
 }
-let Citems;
+let Xitems;
 const searchByCategory = async (q) => {
-    if (!Citems) {
-        Citems = await getAllItems();
-        Citems = Citems.slice(0, 1000);
-        Citems = Citems.map((item) => item.dataValues);
-        Citems.forEach((item) => {
+    let Citems;
+    if (!Xitems) {
+        Xitems = await getAllItems();
+        Xitems = Xitems.slice(0, 1000);
+        Xitems = Xitems.map((item) => item.dataValues);
+        Xitems.forEach((item) => {
         item.Categories_Items = item.Categories_Items.map((ci) => ci.Category.dataValues);
     });
     }
-
+    else 
+    Citems = Xitems;
+    
     
     // console.log(Citems[0].Categories_Items[0].name);
 
@@ -139,5 +143,66 @@ const searchByName = async (itemName)  => {
     }
 
 }
+const getAllDestination = async () => {
+    try {
+        const destinations = await destination.findAll();
+        return destinations;
+    } catch (error) {
+        throw new Error(`Error getting Desination: ${error.message}`);
+    }
+
+}
+let allItems;
+
+const filterSearch = async (q) => {
+    //e = localtion
+        //p = price 
+        //s = star
+        //t = searchText
+        //localhost:8000/search/filterSearch?e=Quận Hải Châu, Quận Liên Chiểu, Huyện Hòa Vang&p=85000&s=4.5
+    
+    let {e,p,t,s} = q;
+    if (!e) e = "";
+    if (!p) p = 0;
+    if (!s) s = 0;
+    if (!t) t = " ";
+
+
+    e = e.split(",");
+    p = parseFloat(p);
+    s = parseFloat(s);
+    console.log(e,p,s)
+
+    try {
+        if (!allItems) {
+            allItems = await getAllDestination();
+            allItems = allItems.map((item) => item.dataValues);
+        }
+        let items = allItems;
+
+        items = items.filter((item) => {
+            let check = false;
+            for (let i = 0; i < e.length; i++) {
+                if (item.location.toLowerCase().includes(e[i].toLowerCase())) {
+                    check = true;
+                    break;
+                }
+            }
+            let check2 = false;
+            if (t) {
+                check2 = item.name.toLowerCase().includes(t.toLowerCase());
+            }
+
+
+
+            return   check2 && check && item.averagePrice <= p && item.averageRating >= s;
+        });
+        return items;
+    } catch (error) {
+        throw new Error(`Error getting filterSearch: ${error.message}`);
+    }
+}
+
+
 module.exports = {
-    searchByName,searchByCategory}
+    searchByName,searchByCategory,filterSearch}
