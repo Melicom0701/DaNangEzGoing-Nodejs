@@ -236,41 +236,50 @@ const getDestination = async (_limit, page) => {
     throw new Error(`Error getting destinations: ${error.message}`);
   }
 };
-const updateDestination = async (id, title, description, image, date, x, y) => {
+const updateDestination = async (req,res) => {
   try {
     const { id } = req.params;
-    const { title, description, image, date, x, y } = req.body;
-    const destination = await destination.findByPk(id);
+    const { name, description, location, image, startTime, endTime, averageRating, averagePrice, x, y, category } = req.body;
+    const destinationX = await destination.findByPk(id);
     if (destination) {
-      destination.title = title;
-      destination.description = description;
-      destination.image = image;
-      destination.date = date;
-      destination.x = x;
-      destination.y = y;
-      await destination.save();
-      res.status(200).json(destination);
+      destinationX.name = name;
+      destinationX.location = location
+      destinationX.description = description;
+      destinationX.image = image;
+      destinationX.startTime = startTime;
+      destinationX.endTime = endTime;
+      destinationX.averageRating = averageRating;
+      destinationX.averagePrice = averagePrice;
+      destinationX.x = x;
+      destinationX.y = y;
+      destinationX.category = category;
+      await destinationX.save();
+      res.status(200).json(destinationX);
     } else {
       res.status(404).json({ message: "Destination not found" });
     }
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: error.message });
   }
 };
 const deleteDestination = async (req, res) => {
   try {
     const { id } = req.params;
-    const destination = await destination.findByPk(id);
-    if (destination) {
-      await destination.destroy();
-      res.status(204).end();
+    const des = await destination.findByPk(id);
+    if (des) {
+      await des.destroy();
+      res.status(200).json({ message: "Destination deleted" });
     } else {
       res.status(404).json({ message: "Destination not found" });
     }
-  } catch (error) {
+  }
+  catch (error) {
     res.status(500).json({ error: error.message });
   }
-};
+
+
+}
 const getDestinationById = async (id) => {
   try {
     const _destination = await destination.findByPk(id);
@@ -397,12 +406,46 @@ const getSavedDestinations = async (userId) => {
   }
 
 }
+const getAllDestination = async (_start, _end,q) => {
+  try {
+    if (!_start) _start = 0;
+    if (!_end) _end = 10;
+    if (!q) q = "";
+    _start = parseInt(_start); 
+    _end = parseInt(_end);
+    
+    //q could be id, name,location
+
+    const destinations = await destination.findAndCountAll({
+        limit: _end - _start,
+        offset: _start,
+        where: {
+          [Sequelize.Op.or]: [
+            {
+              name: {
+                [Sequelize.Op.like]: `%${q}%`,
+              },
+            },
+            {
+              id: {
+                [Sequelize.Op.like]: `%${q}%`,
+              },
+            },
+          ],
+      }
+  });
+    return destinations;
+  } catch (error) {
+    throw new Error(`Error getting destinations: ${error.message}`);
+  }
+}
 
 module.exports = {
   addDestination,
   getSavedDestinations,
   getDestination,
   updateDestination,
+  getAllDestination,
   deleteDestination,
   getFoodItems,
   getTravelItems,

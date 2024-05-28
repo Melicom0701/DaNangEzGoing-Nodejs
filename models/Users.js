@@ -61,6 +61,14 @@ module.exports = (sequelize, DataTypes) => {
             notEmpty : true,
         },
     },
+    roleId : {
+        type: DataTypes.UUID,
+        allowNull: false,
+        validate: {
+            notEmpty : true,
+        },
+    },
+
     birthDate : {
         type: DataTypes.DATE,
         allowNull: false,

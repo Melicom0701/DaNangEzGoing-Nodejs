@@ -151,22 +151,7 @@ const getDestination = async (req, res) => {
 };
 const updateDestination = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { title, description, image, date, x, y } = req.body;
-    const destination = await DestinationService.updateDestination(
-      id,
-      title,
-      description,
-      image,
-      date,
-      x,
-      y
-    );
-    if (destination) {
-      res.status(200).json(destination);
-    } else {
-      res.status(404).json({ message: "Destination not found" });
-    }
+    const destination = await DestinationService.updateDestination(req,res)
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -174,12 +159,7 @@ const updateDestination = async (req, res) => {
 const deleteDestination = async (req, res) => {
   try {
     const { id } = req.params;
-    const destination = await DestinationService.deleteDestination(id);
-    if (destination) {
-      res.status(204).end();
-    } else {
-      res.status(404).json({ message: "Destination not found" });
-    }
+    const destination = await DestinationService.deleteDestination(req,res);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -252,8 +232,23 @@ const getSavedDestinations = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 }
+const getAllDestination = async (req, res) => {
+  try {
+    const { _start, _end,q } = req.query;
+    const result = await DestinationService.getAllDestination(_start, _end,q);
+    const length = result.count;
+    const destination = result.rows;
+    res.set('Access-Control-Expose-Headers', 'X-Total-Count')
+    res.set('X-Total-Count', length)
+
+    res.status(200).json(destination);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
+  getAllDestination,
   addDestination,
   getDestination,
   updateDestination,

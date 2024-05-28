@@ -20,8 +20,9 @@ router.post("/Review/:reviewId/like", destinationController.LikeReview)
 router.post("/:id/save", destinationController.saveDestination);
 router.get("/saved", destinationController.getSavedDestinations);
 
+//destination routes
 router.get("/:id", destinationController.getDestinationById);
-router.get("/", destinationController.getDestination);
+router.get("/", destinationController.getAllDestination);
 router.put("/:id", destinationController.updateDestination);
 router.delete("/:id", destinationController.deleteDestination);
 
