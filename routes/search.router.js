@@ -7,5 +7,6 @@ router.get("/searchByName", searchController.searchByName);
 router.get("/searchByCategory", searchController.searchByCategory );
 router.get("/getAllItems", searchController.getAllItems);
 router.get("/filterSearch", searchController.filterSearch);
+router.get("/advancedSearch", searchController.AISearch);
 
 module.exports = router;

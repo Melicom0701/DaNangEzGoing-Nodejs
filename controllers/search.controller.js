@@ -1,6 +1,15 @@
 const searchService = require('../services/search.service');
+const AISearchService = require('../services/AISearch.service.js');
+const AISearch = async (req, res) => {
+    try {
+        const { q } = req.query;
+        const results = await AISearchService.PerformSearch(q);
+        res.status(200).json(results);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 
-
+}
 
 const searchByName = async (req, res) => {
     try {
@@ -50,5 +59,6 @@ module.exports = {
     searchByCategory,
     searchByName,
     getAllItems,
-    filterSearch
+    filterSearch,
+    AISearch
 }
