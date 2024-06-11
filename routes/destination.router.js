@@ -13,7 +13,7 @@ router.post("/:id/review", validateReview ,destinationController.addReview);
 router.get("/Review/:reviewId/LikeStatus", destinationController.LikeStatus)
 router.get("/Review/:reviewId/like", destinationController.getLikes)
 router.post("/Review/:reviewId/like", destinationController.LikeReview)
-
+router.delete("/Review/:reviewId", destinationController.deleteReview)
 
 //destination 
 //save destination

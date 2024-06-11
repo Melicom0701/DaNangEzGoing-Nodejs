@@ -22,6 +22,7 @@ const getUser = async (req, res) => {
     try {
         const token = req.headers.authorization.split(" ")[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log(token)
         if (!decoded.id ) {
             throw new Error('Unauthorized');
         }
@@ -63,6 +64,25 @@ const deleteUser = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 }
+const updateProfile = async (req, res) => {
+    try {
+        const { id,name, username, avatar, email, phone,password } = req.body;
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            throw new Error('Invalid email');
+        }
+        if (!/^\d{10}$/.test(phone)) {
+            throw new Error('Invalid phone');
+        }
+
+
+        const user = await userService.updateProfile(id, name, email, phone,avatar,password);
+        res.status(200).json({message:"Update success"});
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    
+    }
+}
 module.exports = {
-    getUser,getAllUsers,getUserById,deleteUser,updateUser
+    getUser,getAllUsers,getUserById,deleteUser,updateUser,updateProfile
 }

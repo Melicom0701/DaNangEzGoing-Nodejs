@@ -13,6 +13,15 @@ const addDestination = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+const deleteReview = async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+    const review = await DestinationService.deleteReview(reviewId);
+    res.status(200).json(review);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
 const saveDestination = async (req, res) => {
   try {
     const { id } = req.params;
@@ -265,6 +274,7 @@ module.exports = {
   getLikes,
   saveDestination,
   getMenu,
+  deleteReview,
   addMenu,
   getCategories,
   addCategory,

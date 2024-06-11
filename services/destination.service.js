@@ -78,7 +78,20 @@ const getLikes = async (reviewId) => {
     throw new Error(`Error getting likes: ${error.message}`);
   }
 };
+const deleteReview = async (reviewId) => {
+  try {
+    const review = await DestinationReviews.findByPk(reviewId);
+    if (review) {
+      await review.destroy();
+      return { message: "Review deleted" };
+    } else {
+      return { message: "Review not found" };
+    }
+  } catch (error) {
+    throw new Error(`Error deleting review: ${error.message}`);
+  }
 
+}
 
 const LikeStatus = async (destinationReviewId, userId) => {
   try {
@@ -144,7 +157,7 @@ const getReviews = async (destinationId) => {
       include: [
         {
           model: db.User,
-          attributes: ["name", "email", "username", "avatar"],
+          attributes: ["id","name", "email", "username", "avatar"],
         },
         {
           model: db.Destination,
@@ -448,6 +461,7 @@ module.exports = {
   getAllDestination,
   deleteDestination,
   getFoodItems,
+  deleteReview,
   getTravelItems,
   getDestinationById,
   getbookingItems,

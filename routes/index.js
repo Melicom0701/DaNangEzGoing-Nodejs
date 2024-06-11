@@ -6,11 +6,12 @@ const userRouter = require("./user.router");
 const blobRouter = require("./blob.router");
 const searchRouter = require("./search.router");
 const roleRouter = require("./role.router");
-
+const statsRouter = require("./stats.router");
 router.use("/destination", destinationRouter);
 router.use("/auth", authRouter);
 router.use("/user", userRouter);
 router.use("/blob", blobRouter);
 router.use("/roles", roleRouter);
 router.use("/search", searchRouter);
+router.use("/stats", statsRouter);
 module.exports = router;

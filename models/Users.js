@@ -62,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
         },
     },
     roleId : {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
             notEmpty : true,
@@ -87,6 +87,10 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   User.associate = function(models) {
     // associations can be defined here
+    User.belongsTo(models.Role, {
+        foreignKey: 'roleId',
+        onDelete: 'CASCADE',
+    });
   };
   return User;
 }
